@@ -32,6 +32,16 @@ The analysis incorporated available information from:
 
 These fields were combined to preserve as much descriptive information as possible when individual fields were incomplete.
 
+
+### Data Coverage and Selection Bias
+
+Of the 1,018 retrieved CT series, 573 (56.3%) contained sufficient descriptive metadata for the classification experiment. The remaining 445 series (43.7%) were excluded because their available metadata did not support reliable assignment to the working protocol taxonomy.
+
+This exclusion is an important limitation. Series with complete or informative metadata may differ systematically from those with incomplete descriptions. As a result, the reported classification performance applies to the retained subset and may overestimate performance across the full collection or in environments with less consistent metadata documentation.
+
+A future evaluation should compare included and excluded records across available metadata characteristics and report both classification performance and the proportion of records that can be classified.
+
+
 ## Reference Taxonomy
 
 Exploratory analysis of the metadata was used to develop eight working protocol classes:
@@ -93,6 +103,7 @@ The error analysis was particularly informative. The LLM sometimes used contextu
 
 These findings demonstrated that disagreement with a reference label does not necessarily represent a random model failure. It can also expose ambiguity in the metadata, limitations in the taxonomy, or uncertainty in the reference standard itself.
 
+
 ## Key Takeaways
 
 The rule-based approach performed extremely well when terminology explicitly matched the reference taxonomy. Its decisions were also transparent and reproducible.
@@ -114,6 +125,43 @@ This was an exploratory study with several important limitations:
 
 The reference taxonomy should therefore be considered a working taxonomy rather than a finalized clinical or operational standard.
 
+
+## Ethical Assessment
+
+Although this project uses a publicly available research dataset and focuses on descriptive CT metadata rather than diagnostic image interpretation, several ethical and operational risks remain relevant.
+
+The following assessment identifies potential concerns, estimates their likelihood and impact, and proposes mitigation measures. These ratings are qualitative assessments for an exploratory research workflow, not validated estimates of clinical risk.
+
+| Ethical Concern | Likelihood | Impact | Proposed Mitigation |
+|---|---|---|---|
+| Privacy and external API transmission | Possible | High | Verify that all transmitted metadata are appropriately de-identified and permitted for external processing. Minimize the information included in API requests and review applicable data-sharing policies. |
+| Reference-label validity | Likely | Moderate to High | Obtain independent review from qualified imaging professionals, document disagreements, and establish a process for adjudicating ambiguous labels. |
+| Selection bias from missing metadata | Likely | Moderate to High | Analyze differences between included and excluded records, report classification coverage, and evaluate performance on additional datasets. |
+| Class imbalance | Likely | Moderate | Report per-class precision, recall, F1, and support rather than relying on overall accuracy alone. Expand evaluation of underrepresented categories. |
+| Misuse or overinterpretation | Possible | High | Clearly identify the system as exploratory research, avoid claims of clinical validation, and require human oversight and independent validation before operational use. |
+
+### Privacy and Data Governance
+
+The source collection is publicly available through The Cancer Imaging Archive (TCIA), but public availability does not eliminate the need to assess privacy and data-sharing risks.
+
+DICOM metadata can contain identifying or sensitive information, particularly in free-text fields. Because the LLM experiment used an external API, the privacy implications of transmitting metadata are relevant even though image pixels were not used.
+
+Before extending this workflow to institutional or patient-level data, a formal review of de-identification procedures, applicable data-sharing agreements, API data-handling policies, and institutional requirements would be necessary.
+
+### Data Validity and Representation
+
+The analysis excluded 445 series with insufficient descriptive metadata. This filtering decision was necessary for the exploratory comparison but may have introduced selection bias.
+
+The reference taxonomy was also developed from the available data, and labels were assigned by a single reviewer. These decisions influence what the models were evaluated against and limit the strength of conclusions about classification correctness.
+
+The results should therefore be interpreted as agreement with a working reference taxonomy rather than evidence of independently validated clinical accuracy.
+
+### Responsible Interpretation and Use
+
+The project is intended to investigate metadata standardization for research and analytics. It does not determine whether a CT examination was clinically appropriate, whether imaging findings are correct, or whether a protocol should be ordered.
+
+A production implementation would require additional validation, documented governance procedures, and human review of ambiguous cases. Automated classifications should not be treated as authoritative clinical decisions without such safeguards.
+
 ## Future Work
 
 Future research could include:
@@ -126,6 +174,20 @@ Future research could include:
 - Human review of disagreements between classifiers
 - Development of a hybrid rule-based and LLM-assisted workflow
 - Iterative refinement of rules using validated contextual findings
+
+
+## Proposed Implementation Plan
+
+A future implementation could use a staged approach:
+
+1. **Metadata intake and validation:** Collect permitted DICOM metadata, verify de-identification where applicable, and identify missing or inconsistent fields.
+2. **Rule-based classification:** Apply documented classification rules to records containing explicit protocol terminology.
+3. **Ambiguity detection:** Flag records with insufficient information, conflicting terminology, or classifications requiring further review.
+4. **LLM-assisted investigation:** Use an approved LLM workflow to investigate selected ambiguous records, subject to appropriate privacy and governance controls.
+5. **Human review:** Have qualified reviewers evaluate disagreements and approve any changes to reference labels or classification rules.
+6. **Ongoing evaluation:** Monitor classification coverage, per-class performance, error patterns, and changes in metadata terminology.
+
+This workflow is a proposed extension of the exploratory study and has not been implemented or clinically validated.
 
 ## Repository Contents
 
