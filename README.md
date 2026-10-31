@@ -176,6 +176,66 @@ Future research could include:
 - Iterative refinement of rules using validated contextual findings
 
 
+## Reproducibility
+
+The analysis was developed in a Jupyter Notebook using Python. The notebook documents the process of retrieving CT series metadata, examining missing values, developing a working reference taxonomy, applying classification methods, and evaluating their results.
+
+### Software and Dependencies
+
+The notebook uses the following Python packages:
+
+- `pandas` for data preparation and analysis
+- `tcia_utils` for retrieving TCIA/NBIA series metadata
+- `scikit-learn` for classification metrics and confusion matrices
+- `matplotlib` for visualizations
+- `openai` for the LLM classification experiment
+
+Python's built-in `re`, `os`, `time`, and `getpass` modules are also used.
+
+The repository does not currently provide a pinned dependency environment. Package versions and compatibility should be verified before attempting to reproduce the analysis.
+
+### Data Access
+
+The source data are retrieved programmatically from the public LIDC-IDRI collection through TCIA/NBIA.
+
+The notebook requests CT series metadata and constructs a pandas DataFrame from the returned records. It then examines metadata completeness and retains series containing at least one of the following descriptive fields:
+
+- `SeriesDescription`
+- `ProtocolName`
+- `StudyDesc`
+
+The original analysis retrieved 1,018 CT series and retained 573 for classification. Because the source is accessed through an external service, future retrievals may differ if the collection or API responses change.
+
+### Running the Notebook
+
+1. Clone or download this repository.
+2. Set up a Python environment with Jupyter Notebook and the required dependencies.
+3. Open `01_lidc_metadata_exploration.ipynb`.
+4. Review the notebook's data retrieval, filtering, and classification steps.
+5. Create a local `data/processed/` directory before running cells that export CSV files.
+6. Run the notebook cells in sequence, reviewing the intermediate outputs and reference-labeling steps.
+7. Compare the resulting classification metrics with those reported in this README.
+
+The notebook contains exploratory steps used to develop the working taxonomy. These steps should be reviewed rather than treated as a fully automated or independently validated labeling process.
+
+### Reproducing the LLM Experiment
+
+The LLM experiment uses the OpenAI Responses API and requires a valid API key.
+
+The notebook requests the API key interactively using `getpass`, rather than requiring the key to be stored directly in the notebook.
+
+Reproducing the LLM experiment may incur API charges. Results may also differ because of model availability, model updates, and variation in generated responses.
+
+The reported LLM results represent the original experimental evaluation and should not be interpreted as evidence of reproducibility across repeated runs.
+
+### Reproducibility Limitations
+
+The repository contains the analysis notebook but does not currently provide a fully automated, version-pinned reproduction environment.
+
+The reference taxonomy was developed through exploratory analysis, and reference labels were assigned by a single reviewer. Reproducing the exact reference-labeling decisions may therefore require additional documentation or review.
+
+The reported evaluation also applies only to the 573 retained series. Results may differ when using updated metadata, alternative reference labels, or additional datasets.
+
 ## Proposed Implementation Plan
 
 A future implementation could use a staged approach:
